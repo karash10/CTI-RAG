@@ -1,3 +1,4 @@
-.chroma_db_v_rag/
-.download.ipynb
-.mitredat.ipynb
+/chroma_db_v_rag/
+pycache/*.pyc
+.ipynb_checkpoints/*.ipynb
+.env
