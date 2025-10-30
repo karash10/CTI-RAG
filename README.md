@@ -1,7 +1,19 @@
-# CTI-RAG
+# CTI-RAG: Retrieval-Augmented Generation for Cyber Threat Intelligence
 
-CTI-RAG is a Retrieval-Augmented Generation (RAG) system for Cyber Threat Intelligence analysis.  
-It enables ingestion, storage, and analysis of CTI datasets with semantic search and chatbot capabilities.
+CTI-RAG is an open-source Retrieval-Augmented Generation (RAG) system for Cyber Threat Intelligence (CTI) analysis.  
+It enables ingestion, semantic indexing, and analysis of CTI datasets with advanced semantic search and analyst chatbot capabilities.
+
+---
+
+## Features
+
+- **Automatic ingestion & processing** of CVE and MITRE ATT&CK datasets.
+- **Semantic chunking & embedding** using SentenceTransformer.
+- **Vector database storage** (ChromaDB) for fast, context-rich retrieval.
+- **RAG-powered chatbot** interface with Gemini LLM for threat analysis.
+- **Cited intelligence**: Answers always reference specific threat IDs (CVE, TTP).
+- **Mitigation extraction**: Get actionable, prioritized mitigation steps.
+- **Extensible data support**: Easily add new CTI sources to the dataset folder.
 
 ---
 
@@ -9,81 +21,99 @@ It enables ingestion, storage, and analysis of CTI datasets with semantic search
 
 ```
 CTI_RAG/
-├── chroma_db_v_rag/
-│   └── ae721f7a-5a2d-4021-86a4-af37291ea417/
-│       └── chroma.sqlite3
-├── dataset/
+├── chroma_db_v_rag/           # Vector database files (auto-generated, do not edit)
+├── dataset/                   # Place your CTI datasets here (CSV, JSON, etc.)
 │   ├── cve_data_raw.csv
-│   ├── datadown.ipynb
 │   ├── enterprise-attack-17.1.json
-│   └── mitredat.ipynb
-├── .gitignore
-├── analyst_chatbot.py
-├── rag_debugger.py
+│   └── ... (other files you add)
+├── analyst_chatbot.py         # Analyst chatbot (run second)
+├── rag_debugger.py            # RAG pipeline setup & debugging (run first)
+├── requirements.txt           # Python dependencies
+└── README.md                  # This file
 ```
-- **chroma_db_v_rag/**: Vector database files (auto-generated; you do not need to edit these).
-- **dataset/**: Place all your CTI datasets here (CSV, JSON, etc.). This folder is ignored by git, so you must add your own files after cloning.
-- **analyst_chatbot.py**: The analyst chatbot interface script (run second).
-- **rag_debugger.py**: RAG pipeline setup and debugging script (run first).
+
+- **chroma_db_v_rag/**: Stores vector database (auto-generated).
+- **dataset/**: Add your CTI datasets here. This folder is ignored by git.
+- **analyst_chatbot.py**: Streamlit-powered chatbot for CTI queries.
+- **rag_debugger.py**: Script to ingest data and build the vector database.
 
 ---
 
-## How to Clone and Set Up
+## Tech Stack
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/karash10/CTI-RAG.git
-   cd CTI-RAG
-   ```
+- **Python 3.10+**
+- **ChromaDB** (Vector Database)
+- **SentenceTransformer** (`all-MiniLM-L6-v2` for embedding)
+- **LangChain** (retriever, chaining, document processing)
+- **Gemini LLM** (Google Generative AI, via API key)
+- **Streamlit** (chatbot UI)
+- **pandas, json** for data wrangling
 
-2. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
+---
 
-3. **Add your dataset**
-   Place your CTI dataset(s) in the `dataset/` folder.  
-   Example: `dataset/cve_data_raw.csv`, `dataset/enterprise-attack-17.1.json`, etc.
+## Getting Started
 
-   > The `dataset/` folder is ignored by git, so you must add your own files after cloning.
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/karash10/CTI-RAG.git
+cd CTI-RAG
+```
+
+### 2. Install Python dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Add your dataset
+
+Place your CTI dataset(s) in the `dataset/` folder.  
+Example files:
+- `dataset/cve_data_raw.csv`
+- `dataset/enterprise-attack-17.1.json`
+
+> Note: The `dataset/` folder is **ignored by git**. Add your own files after cloning.
 
 ---
 
 ## Running the Project
 
-**1. Step 1: Run the RAG Debugger**
+### 1. Build the Vector Database
 
 ```bash
 python rag_debugger.py
 ```
-- This script sets up the database and ingests your dataset.
-- **On running, you will be prompted to enter your API key** (e.g., for OpenAI or other services).  
-  Enter your API key to continue.
+- Ingests and processes your datasets.
+- Prompts for your API key (Google Gemini or other supported LLM).
+- Builds and persists the vector database.
 
-**2. Step 2: Run the Analyst Chatbot**
+### 2. Launch the Chatbot
 
 ```bash
 python analyst_chatbot.py
 ```
-- This launches the chatbot interface for CTI analysis.
-- You may be prompted for your API key again if required.
+- Streamlit app for CTI analysis.
+- Enter your API key when prompted.
+- Ask about CVEs, MITRE ATT&CK techniques, or mitigation strategies.
 
 ---
 
-## Flow Summary
+## Example Usage
 
-1. Clone the repository.
-2. Install dependencies.
-3. Place your dataset in the `dataset/` folder.
-4. Run `rag_debugger.py` and enter your API key when prompted.
-5. Run `analyst_chatbot.py` for interactive CTI analysis.
+- **Query:** "What are the mitigations for CVE-2024-XXXX?"
+- **Query:** "Describe technique T1055.011 and its mitigations."
+- **Query:** "What threat tactics are associated with persistence?"
+
+All answers are sourced directly from your indexed intelligence corpus, with referenced IDs and actionable mitigation steps.
 
 ---
 
 ## Troubleshooting
 
-- **Missing Dataset:** If you see errors about missing datasets, ensure your files are present in the `dataset/` folder.
-- **API Key:** If prompted for an API key, make sure your key is valid for the required service.
+- **Missing Dataset:** Ensure your files are present in the `dataset/` folder.
+- **API Key:** Use a valid API key for the Gemini or other supported LLM services.
+- **Vector DB Missing:** Run `rag_debugger.py` before launching the chatbot.
 
 ---
 
